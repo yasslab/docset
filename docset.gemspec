@@ -6,12 +6,11 @@ require 'docset/version'
 Gem::Specification.new do |spec|
   spec.name          = "docset"
   spec.version       = Docset::VERSION
-  spec.authors       = ["Seiei Miyagi"]
-  spec.email         = ["hanachin@gmail.com"]
+  spec.authors       = ["siman-man", "Seiei Miyagi"]
+  spec.email         = ["k128585@ie.u-ryukyu.ac.jp", "hanachin@gmail.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{a library for docset generation}
+  spec.homepage      = "https://github.com/yasslab/docset"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
