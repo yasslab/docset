@@ -1,4 +1,5 @@
 require "docset/version"
+require "docset/base"
 require "docset/index_db"
 require "docset/plist"
 
