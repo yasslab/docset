@@ -1,4 +1,5 @@
 require "spec_helper"
+require "fileutils"
 
 RSpec.describe Docset::Base do
   let(:tmpdir) { @tmpdir }
@@ -8,6 +9,51 @@ RSpec.describe Docset::Base do
     Dir.mktmpdir do |dir|
       @tmpdir = dir
       example.run
+    end
+  end
+
+  shared_examples 'copy file or directory' do |method|
+    context 'copy file' do
+      let(:src_path) { File.join(tmpdir, 'hi') }
+
+      before { File.write(src_path, 'hi') }
+
+      specify do
+        dest_path = File.join(base_dir, 'greeting', 'hi')
+        expect{ docset.public_send(method, src_path, 'greeting/hi') }.to change {
+          File.exist?(dest_path)
+        }.and change { File.read(dest_path) rescue nil }.to('hi')
+      end
+
+      specify do
+        dest_path = File.join(base_dir, 'hi')
+        expect{ docset.public_send(method, src_path) }.to change {
+          File.exist?(dest_path)
+        }.and change { File.read(dest_path) rescue nil }.to('hi')
+      end
+    end
+
+    context 'copy dir' do
+      let(:src_path) { File.join(tmpdir, 'foo/bar/hi') }
+
+      before do
+        FileUtils.mkdir_p(File.dirname(src_path))
+        File.write(src_path, 'hi')
+      end
+
+      specify do
+        dest_path = File.join(base_dir, 'foo', 'bar', 'hi')
+        expect{ docset.public_send(method, File.join(tmpdir, 'foo')) }.to change {
+          File.exist?(dest_path)
+        }.and change { File.read(dest_path) rescue nil }.to('hi')
+      end
+
+      specify do
+        dest_path = File.join(base_dir, 'foo2', 'bar2', 'bar', 'hi')
+        expect{ docset.public_send(method, File.join(tmpdir, 'foo'), 'foo2/bar2') }.to change {
+          File.exist?(dest_path)
+        }.and change { File.read(dest_path) rescue nil }.to('hi')
+      end
     end
   end
 
@@ -31,32 +77,16 @@ RSpec.describe Docset::Base do
 
   describe '#add_content' do
     let(:docset) { described_class.new(path) }
-    let(:src_path) { File.join(tmpdir, 'hi') }
-    let(:dest_path) { File.join(docset.path, 'Contents', 'greeting', 'hi') }
+    let(:base_dir) { File.join(path, 'Contents') }
 
-    before { File.write(src_path, 'hi') }
-
-    specify do
-      expect{ docset.add_content(src_path, 'greeting/hi') }.to change {
-        File.exist?(dest_path)
-      }
-      expect(File.read(dest_path)).to eq('hi')
-    end
+    it_behaves_like 'copy file or directory', :add_content
   end
 
   describe '#add_document' do
     let(:docset) { described_class.new(path) }
-    let(:src_path) { File.join(tmpdir, 'hi') }
-    let(:dest_path) { File.join(docset.path, 'Contents', 'Resources', 'Documents', 'greeting', 'hi') }
+    let(:base_dir) { File.join(path, 'Contents', 'Resources', 'Documents') }
 
-    before { File.write(src_path, 'hi') }
-
-    specify do
-      expect{ docset.add_document(src_path, 'greeting/hi') }.to change {
-        File.exist?(dest_path)
-      }
-      expect(File.read(dest_path)).to eq('hi')
-    end
+    it_behaves_like 'copy file or directory', :add_document
   end
 
   describe '#add_index' do

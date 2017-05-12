@@ -11,13 +11,13 @@ module Docset
       @db.init
     end
 
-    def add_content(from, to)
+    def add_content(from, to = '')
       dest_path = File.join(contents_path, to)
       FileUtils.mkdir_p(File.dirname(dest_path))
       FileUtils.cp_r(from, dest_path)
     end
 
-    def add_document(from, to)
+    def add_document(from, to = '')
       dest_path = File.join(documents_path, to)
       FileUtils.mkdir_p(File.dirname(dest_path))
       FileUtils.cp_r(from, dest_path)
