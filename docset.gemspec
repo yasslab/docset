@@ -12,6 +12,8 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{a library for docset generation}
   spec.homepage      = "https://github.com/yasslab/docset"
   spec.license       = "MIT"
+  spec.cert_chain    = ['certs/hanachin.pem']
+  spec.signing_key   = File.expand_path("~/.ssh/gem-private_key.pem") if $0 =~ /gem\z/
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
